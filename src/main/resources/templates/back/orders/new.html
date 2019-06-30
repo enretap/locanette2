@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="back/layouts/master">
+<head>
+<meta charset="utf-8">
+<title>Locanette Office | New Order</title>
+<th:block layout:fragment="styles">
+	<!-- CSS Libraries -->
+	<link rel="stylesheet"
+		th:href="@{/back/assets/modules/bootstrap-daterangepicker/daterangepicker.css}">
+	<link rel="stylesheet"
+		th:href="@{/back/assets/modules/bootstrap-colorpicker/dist/css/bootstrap-colorpicker.min.css}">
+	<link rel="stylesheet"
+		th:href="@{/back/assets/modules/select2/dist/css/select2.min.css}">
+	<link rel="stylesheet"
+		th:href="@{/back/assets/modules/jquery-selectric/selectric.css}">
+	<link rel="stylesheet"
+		th:href="@{/back/assets/modules/bootstrap-timepicker/css/bootstrap-timepicker.min.css}">
+	<link rel="stylesheet"
+		th:href="@{/back/assets/modules/bootstrap-tagsinput/dist/bootstrap-tagsinput.css}">
+	<!-- CSS Libraries -->
+	<link rel="stylesheet"
+		th:href="@{/back/assets/modules/summernote/summernote-bs4.css}">
+	<link rel="stylesheet"
+		th:href="@{/back/assets/modules/codemirror/lib/codemirror.css}">
+	<link rel="stylesheet"
+		th:href="@{/back/assets/modules/codemirror/theme/duotone-dark.css}">
+	<link rel="stylesheet"
+		th:href="@{/back/assets/modules/jquery-selectric/selectric.css}">
+	<!-- CSS Libraries -->
+	<link rel="stylesheet"
+		th:href="@{/back/assets/modules/prism/prism.css}">
+	<style>
+.hide {
+	display: none !important;
+}
+</style>
+</th:block>
+</head>
+<body>
+	<div layout:fragment="content">
+		<section class="section">
+			<div class="section-header">
+				<h1>Nouvelle commande</h1>
+				<div class="section-header-breadcrumb">
+					<div class="breadcrumb-item active">
+						<a href="#">Tableau de bord</a>
+					</div>
+					<div class="breadcrumb-item">
+						<a href="#">commandes</a>
+					</div>
+					<div class="breadcrumb-item">nouvelle</div>
+				</div>
+			</div>
+
+			<div class="section-body">
+				<form th:action="@{/admin/order/create}" method="post">
+					<div class="row">
+						<div class="col-12 col-md-4 col-lg-4">
+							<div class="card">
+								<div class="card-header">
+									<h4>Informations du Client</h4>
+								</div>
+								<div class="card-body">
+
+									<div class="form-group">
+										<div class="control-label">Type client</div>
+										<div class="custom-switches-stacked mt-2">
+											<div class="row">
+												<div class="col-12 col-md-6 col-lg-6">
+													<label class="custom-switch"> 
+														<input type="radio" name="customerType" value="old" 
+													       class="custom-switch-input" onclick="boxDisplayer('old');" /> 
+														<span class="custom-switch-indicator"></span> 
+														<span class="custom-switch-description">Ancien</span>
+													</label>
+												</div>
+												<div class="col-12 col-md-6 col-lg-6">
+													<label class="custom-switch"> <input type="radio"
+														name="customerType" value="new"
+														class="custom-switch-input" checked onclick="boxDisplayer('new');" /> <span
+														class="custom-switch-indicator"></span> <span
+														class="custom-switch-description">Nouveau</span>
+													</label>
+												</div>
+
+											</div>
+
+										</div>
+									</div>
+									<div class="form-group old-customer" style="">
+										<label class="">Nom du Client</label> <select
+											name="customertId" class="form-control select2">
+											<option th:each="c:${customers}" th:value="${c.id}"
+												th:text="${c.firstName} + '  '+ ${c.lastName}"></option>
+										</select>
+									</div>
+									<div class="form-group new-customer">
+										<label>Nom</label> <input name="firstName" type="text"
+											class="form-control" placeholder="Ex: YAO" />
+									</div>
+									<div class="form-group new-customer">
+										<label>Prénom(s)</label> <input name="lastName" type="text"
+											class="form-control" placeholder="Ex: Yvo" />
+									</div>
+									<div class="form-group new-customer">
+										<label>Numéro téléphonique</label>
+										<div class="input-group">
+											<div class="input-group-prepend">
+												<div class="input-group-text">
+													<i class="fas fa-phone"></i>
+												</div>
+											</div>
+											<input name="phoneNumber" type="text"
+												class="form-control phone-number"
+												placeholder="Ex : +225 76890545" />
+										</div>
+									</div>
+									<div class="form-group new-customer">
+										<label>Adresse Mail</label>
+										<div class="input-group">
+											<div class="input-group-prepend">
+												<div class="input-group-text">@</div>
+											</div>
+											<input name="email" type="email" class="form-control"
+												placeholder="Ex : yvo@gmail.com" />
+										</div>
+									</div>
+
+								</div>
+							</div>
+							<div class="card">
+								<div class="card-header">
+									<h4>Informations Commande</h4>
+								</div>
+								<div class="card-body">
+									<div class="form-group">
+										<label>Numéro commande</label> <input name="code" type="text"
+											class="form-control purchase-code"
+											placeholder="ASDF-GHIJ-KLMN-OPQR" />
+									</div>
+									<div class="form-group">
+										<label>Opération</label> <select name="operationId"
+											class="form-control select2">
+											<option th:each="o:${operations}" th:value="${o.id}"
+												th:text="${o.label}"></option>
+										</select>
+									</div>
+									<div class="form-group">
+										<label>Durée de location (jour)</label> <input
+											name="rentalPeriod" type="text"
+											class="form-control invoice-input" />
+									</div>
+
+									<div class="form-group">
+										<label>Date prevue pour la livraison</label> <input
+											name="deliveryDateSet" type="text"
+											class="form-control datepicker" placeholder="YYYY/MM/DD" />
+									</div>
+
+									<div class="form-group">
+										<label>Lieu de livraison</label>
+										<div class="form-group row mb-4">
+											<div class="col-sm-12 col-md-12">
+												<textarea name="deliveyPlace" class="summernote-simple"></textarea>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+
+						</div>
+						<div class="col-12 col-md-8 col-lg-8">
+							<div class="card">
+								<div class="card-header">
+									<h4>Materièls Commandés</h4>
+								</div>
+								<div class="card-body">
+									<div class="form-group row mb-4">
+										<label class="col-form-label col-12 col-md-2 col-lg-2">Matériel</label>
+										<div class="col-sm-12 col-md-10">
+											<select id="productIdT" class="form-control select2"
+												onchange="materielDisplayer('#quantiteAffecteeT');">
+												<option th:each="p:${products}" th:value="${p.id}"
+													th:text="${p.designation}"></option>
+											</select>
+										</div>
+									</div>
+									<div class="form-group row mb-4">
+										<label class="col-form-label col-12 col-md-2 col-lg-2">Quantité</label>
+										<div class="col-sm-12 col-md-7">
+											<input id="orderedQuantityT" type="text" class="form-control"
+												onkeypress="notEnterKey();" />
+										</div>
+										<div class="col-sm-12 col-md-3">
+											<button type="button" class="btn btn-primary"
+												onclick="tempInsert('#productIdT', '#inserttable', '#orderedQuantityT');">
+												<i class="fas fa-plus-circle"></i> Ajouter
+											</button>
+										</div>
+
+									</div>
+									<div class="row">
+
+										<div class="table-responsive">
+											<table id="inserttable" class="table table-striped mb-0">
+												<thead>
+													<tr>
+														<th>N°</th>
+														<th>Désignation</th>
+														<th>Quantité</th>
+														<th>Aperçu</th>
+														<th>Editer/Retirer</th>
+													</tr>
+												</thead>
+												<tbody>
+
+												</tbody>
+											</table>
+										</div>
+
+									</div>
+
+								</div>
+							</div>
+
+						</div>
+					</div>
+
+					<button type="submit" class="btn btn-primary">Valider</button>
+				</form>
+
+
+			</div>
+
+		</section>
+		<!-- Materiel modal -->
+		<div class="modal fade" tabindex="-1" role="dialog" id="productmodal">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="modalLabel" data-ref="">Détails du matériel</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<form class="form-horizontal">
+							<div class="row">
+								<div class="col-md-6">
+									<div class="row">
+										<div class="col-md-12 col-sm-12 col-xs-12">
+											<div class="form-group" style="margin-bottom: 1px;">
+												<label for="Xcode" style="text-align: left;"
+													class="col-sm-12 control-label"> Code</label>
+												<div class="col-sm-12">
+													<input disabled type="text" class="form-control" id="Xcode"
+														name="Xcode" value="" placeholder="Entrer le code ici"
+														onkeyup="copier(this, ['#code']);" />
+												</div>
+											</div>
+										</div>
+
+										<div class="col-md-12 col-sm-12 col-xs-12">
+											<div class="form-group" style="margin-bottom: 1px;">
+												<label for="Xdesignation" style="text-align: left;"
+													class="col-sm-12 control-label"> Désignation</label>
+												<div class="col-sm-12">
+													<input disabled type="text" class="form-control"
+														id="Xdesignation" name="Xdesignation" value=""
+														placeholder="Entrer la désignation ici"
+														onkeyup="copier(this, ['#designation']);" />
+
+												</div>
+											</div>
+										</div>
+
+										<div class="col-md-12 col-sm-12 col-xs-12">
+											<div class="form-group" style="margin-bottom: 1px;">
+												<label for="Xordered" style="text-align: left;"
+													class="col-sm-12 control-label"> Quantité affectée</label>
+												<div class="col-sm-12">
+													<input type="text" class="form-control" id="Xordered"
+														name="Xordered" value=""
+														placeholder="Entrer la quantité ici"
+														onkeyup="copier(this, ['#ordered', '#qteVal']);" />
+
+												</div>
+											</div>
+										</div>
+										
+										<div class="col-md-12 col-sm-12 col-xs-12">
+											<div class="form-group" style="margin-bottom: 1px;">
+												<label for="XrentalPrice" style="text-align: left;"
+													class="col-sm-12 control-label"> Prix de location</label>
+												<div class="col-sm-12">
+													<input type="text" class="form-control" id="XrentalPrice"
+														name="XrentalPrice" value=""
+														placeholder="Entrer le prix ici"
+														onkeyup="copier(this, ['#rentalPrice']);" />
+
+												</div>
+											</div>
+										</div>
+										
+										<div class="col-md-12 col-sm-12 col-xs-12">
+											<div class="form-group" style="margin-bottom: 1px;">
+												<label for="XdamagePrice" style="text-align: left;"
+													class="col-sm-12 control-label"> Prix de perte /
+													Casse</label>
+												<div class="col-sm-12">
+													<input type="text" class="form-control" id="XdamagePrice"
+														name="XdamagePrice" value=""
+														placeholder="Entrer le prix ici"
+														onkeyup="copier(this, ['#damagePrice']);" />
+
+												</div>
+											</div>
+										</div>
+
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="row">
+									
+									<div class="col-md-12 col-sm-12 col-xs-12">
+											<div class="form-group" style="margin-bottom: 1px;">
+												<label for="Xdescription" style="text-align: left;"
+													class="col-sm-12 control-label"> Description</label>
+												<div class="col-sm-12">
+													<textarea rows="3" class="form-control" id="Xdescription"
+														name="Xdescription"
+														placeholder="Entrer la description ici"
+														onkeyup="copier(this, ['#description']);"></textarea>
+
+												</div>
+											</div>
+										</div>
+										
+										<div class="col-md-12 col-sm-12 col-xs-12" style="text-align: center;">
+										    <div style="height: 150px;width: 100%;border: 1px solid; grey;">
+										    	<img id="Xproductviewer" src="" style="max-width: 100%; max-height: 150px; 
+											     border: 1px solid lightgrey; margin-bottom: 5px;" alt="" />
+										    </div>
+										</div>
+									</div>
+								</div>
+							
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer bg-whitesmoke br">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Ok</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Materiel modal -->
+
+		
+		<!-- materiel base -->
+		<table class="hide" id="productsbase">
+			<tr th:each="p:${products}">
+				<td th:text="${p.id}"></td>
+				<td th:text="${p.warehouse.id}"></td>
+				<td th:text="${p.code}"></td>
+				<td th:text="${p.designation}"></td>
+				<td th:text="${p.rentalPrice}"></td>
+				<td th:text="${p.damagePrice}"></td>
+				<td th:text="${p.description}"></td>
+				<td th:text="${p.amountStored}"></td>
+
+			</tr>
+		</table>
+		<!-- /.materiel base -->
+		<!-- commande base -->
+		<table class="hide" id="ordersbase">
+			<tr th:each="o:${orders}">
+				<td th:text="${o.id}"></td>
+				<td th:text="${o.code}"></td>
+			</tr>
+		</table>
+		<!-- /.commande base -->
+		<!-- client base -->
+		<table class="hide" id="customersbase">
+			<tr th:each="c:${customers}">
+				<td th:text="${c.id}"></td>
+				<td th:text="${c.firstName}"></td>
+			</tr>
+		</table>
+		<!-- /.client base -->
+	</div>
+
+
+	<th:block layout:fragment="scripts">
+		<!-- JS Libraies -->
+		<script th:src="@{/back/assets/modules/cleave-js/dist/cleave.min.js}"></script>
+		<script
+			th:src="@{/back/assets/modules/cleave-js/dist/addons/cleave-phone.us.js}"></script>
+		<script
+			th:src="@{/back/assets/modules/jquery-pwstrength/jquery.pwstrength.min.js}"></script>
+		<script
+			th:src="@{/back/assets/modules/bootstrap-daterangepicker/daterangepicker.js}"></script>
+		<script
+			th:src="@{/back/assets/modules/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js}"></script>
+		<script
+			th:src="@{/back/assets/modules/bootstrap-timepicker/js/bootstrap-timepicker.min.js}"></script>
+		<script
+			th:src="@{/back/assets/modules/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js}"></script>
+		<script
+			th:src="@{/back/assets/modules/select2/dist/js/select2.full.min.js}"></script>
+		<script
+			th:src="@{/back/assets/modules/jquery-selectric/jquery.selectric.min.js}"></script>
+		<!-- Page Specific JS File -->
+		<script th:src="@{/back/assets/js/page/forms-advanced-forms.js}"></script>
+
+		<!-- JS Libraies -->
+		<script th:src="@{/back/assets/modules/summernote/summernote-bs4.js}"></script>
+		<script th:src="@{/back/assets/modules/codemirror/lib/codemirror.js}"></script>
+		<script
+			th:src="@{/back/assets/modules/codemirror/mode/javascript/javascript.js}"></script>
+
+		<!-- JS Libraies -->
+		<script th:src="@{/back/assets/modules/prism/prism.js}"></script>
+
+		<!-- Page Specific JS File -->
+		<script th:src="@{/back/assets/js/page/bootstrap-modal.js}"></script>
+
+		<script type="text/javascript">
+            var $productsbase = $('#productsbase'),
+                    $productviewer = $('#productviewer'),
+                    $productmodal = $('#productmodal'),
+                    $Xproductviewer = $('#Xproductviewer'),
+                    $inserttable = $('#inserttable'),
+                    $modalLabel = $('#modalLabel'),
+                    $Xcode = $('#Xcode'),
+                    $Xdesignation = $('#Xdesignation'),
+                    $Xordered = $('#Xordered'),
+                    $XrentalPrice = $('#XrentalPrice'),
+                    $XdamagePrice = $('#XdamagePrice'),
+                    $XproductPicture = $('#XproductPicture'),
+                    $Xdescription = $('#Xdescription'),
+                    $mainForm = $('#mainForm'),
+                    $ordersbase = $('#ordersbase').find('tr'),
+                    $customersbase = $('#customersbase').find('tr'),
+                    $oldcustomer = $('.old-customer'),
+                    $newcustomer = $('.new-customer');
+
+            var nbpiece = 1;
+            var addeds = [];
+
+            $(function () {
+            	$oldcustomer.hide();
+            });
+
+            function control(obj, typ) {
+                    var val = $(obj).val();
+                    if (typ === 'cmd') {
+                    $ordersbase.each(function () {
+                        if (val === $(this).find('td:eq(1)').html()) {
+                            Lobibox.notify('error', {
+                                size: 'mini',
+                                title: 'Erreur numéro commande',
+                                position: 'top right',
+                                delayIndicator: false,
+                                msg: 'Le numéro ' + val + ' existe déjà !'
+                            });
+                            $(obj).focus();
+                        }
+                    });
+                    } else if (typ === 'clt') {
+                        $customersbase.each(function () {
+                            if (val === $(this).find('td:eq(1)').html()) {
+                                Lobibox.notify('error', {
+                                    size: 'mini',
+                                    title: 'Erreur numéro client',
+                                    position: 'top right',
+                                    delayIndicator: false,
+                                    msg: 'Le numéro ' + val + ' existe déjà !'
+                                });
+                                $(obj).focus();
+                            }
+                        });
+                    }
+                }
+        
+            function boxHider() {
+            	$newcustomer.hide();
+            	$oldcustomer.hide();
+            }
+
+            function boxDisplayer(elem) {
+            	if(elem==='new'){
+            		$newcustomer.show();
+            		$oldcustomer.hide();
+            	}else{
+            		$oldcustomer.show();
+            		$newcustomer.hide();
+            	}
+            }
+
+            function setPlaceHolder(input, value) {
+                var element = $('#'+input);
+                element.attr({
+                    value : '',
+                    placeholder : value
+                });
+                
+            }
+
+            function applyPlaceHolder() {
+                setPlaceHolder('codeComptableClient2', 'Entrez le code comptable de l\'entreprise ici'),
+                        setPlaceHolder('raisonSocialeClientEntreprise', 'Entrez la raison sociale de l\'entreprise ici'),
+                        setPlaceHolder('contactClient2', 'Entrez le contact de l\'entreprise ici');
+                setPlaceHolder('nomClientParticulier', 'Entrez le nom du client ici'),
+                        setPlaceHolder('prenomClientParticulier', 'Entrez le prenom du client ici'),
+                        setPlaceHolder('codeComptableClient1', 'Entrez le code comptable du client ici'),
+                        setPlaceHolder('contactClient1', 'Entrez le contact du client ici');
+
+                setPlaceHolder('numeroCommande', 'Entrez le numéro ici'),
+                        setPlaceHolder('lieuLivraison', 'Entrez le lieu de la livraison ici'),
+                        setPlaceHolder('dureeLocationCommande', 'Entrez la durée ici'),
+                        setPlaceHolder('dateLivraisonPrevue', 'Entrez la date ici'),
+                        setPlaceHolder('dateCeremoniePrevue', 'Entrez la date ici');
+            }
+
+            window.onload = applyPlaceHolder;
+        
+            //Materiel table initilization
+            //Test if equipment is already selected
+            function alredySelected(table, elem) {
+                var resp = false;
+                for (var i = 1; i < table.length; i++) {
+                    if (parseInt(elem) === parseInt(table[i])) {
+                        resp = true;
+                    }
+                }
+                return resp;
+            }
+            //Erase an equipment in selct list
+            function erase(table, elem) {
+                for (var i = 1; i < table.length; i++) {
+                    if (parseInt(elem) === parseInt(table[i])) {
+                        table[i] = 0;
+                    }
+                }
+            }
+            //Display equipment picture after selection 
+            function materielDisplayer(chpss) {
+                var chps = $(chpss);
+                var selectp = $('#productIdT');
+                //Search materiel image
+                var trs = $productsbase.find('tr');
+                trs.each(function () {
+                    var tds = $(this).find('td');
+                    if (tds.eq(0).text() === selectp.val()) {
+                        chps.attr({
+                            value: '',
+                            placeholder: 'Insérer la quantité demandée'
+                        });
+                        $productviewer.attr({
+                            src: '<%=request.getContextPath()%>/productPictureReaderServlet?imageName=' + tds.eq(8).text()
+                        });
+                    }
+                });
+            }
+            //temp insert / Partial insert in table
+            function tempInsert(sectselected, tabrecap, chpss) {
+
+                if (!alredySelected(addeds, $(sectselected).val())) {
+                    var productId, warehouseId, code, designation,
+                            rentalPrice, damagePrice, productPicture,
+                            description = null;
+                    //search information about selected element / Recherche des informations sur l'elemnt selectionné
+                    var trs = $productsbase.find('tr');
+                    var selectp = $(sectselected);
+                    trs.each(function () {
+                        var tds = $(this).find('td');
+                        if (tds.eq(0).text() === selectp.val()) {
+                            productId = tds.eq(0).text();
+                            warehouseId = tds.eq(1).text();
+                            code = tds.eq(2).text();
+                            designation = tds.eq(3).text();
+                            rentalPrice = tds.eq(4).text();
+                            damagePrice = tds.eq(5).text();
+                            productPicture = tds.eq(6).text();
+                            description = tds.eq(7).text();
+                        }
+                    });
+                    nb = '\'' + nbpiece + '\'';
+                    var table = $(tabrecap);
+                    var tbody = $('<tbody></tbody>');
+                    var tr = $('<tr></tr>');
+                    tbody.append(tr);
+                    table.append(tbody);
+                    var td1 = $('<td></td>'), td2 = $('<td></td>'), td3 = $('<td></td>'), td4 = $('<td></td>'), td5 = $('<td></td>');
+
+                    var _productId = $('<input/>', {type: 'checkbox', class: 'icheckbox hide', checked: 'checked'}),
+                        _warehouseId = $('<input/>', {type: 'checkbox', class: 'icheckbox hide', checked: 'checked'}),
+                        _code = $('<input/>', {type: 'checkbox', class: 'icheckbox hide', checked: 'checked'}),
+                        _designation = $('<input/>', {type: 'checkbox', class: 'icheckbox hide', checked: 'checked'}),
+                        _rentalPrice = $('<input/>', {type: 'checkbox', class: 'icheckbox hide', checked: 'checked'}),
+                        _damagePrice = $('<input/>', {type: 'checkbox', class: 'icheckbox hide', checked: 'checked'}),
+                        _productPicture = $('<input/>', {type: 'checkbox', class: 'icheckbox hide', checked: 'checked'}),
+                        _description = $('<input/>', {type: 'checkbox', class: 'icheckbox hide', checked: 'checked'}),
+                        _ordered = $('<input/>', {type: 'checkbox', class: 'icheckbox hide', checked: 'checked'});
+
+                    _productId.attr({
+                        id: 'productId' + nbpiece,
+                        name: 'productId',
+                        value: productId
+                    });
+                    _warehouseId.attr({
+                        id: 'warehouseId' + nbpiece,
+                        name: 'warehouseId',
+                        value: warehouseId
+                    });
+                    _code.attr({
+                        id: 'code' + nbpiece,
+                        name: 'code',
+                        value: code
+                    });
+                    _designation.attr({
+                        id: 'designation' + nbpiece,
+                        name: 'designation',
+                        value: designation
+                    });
+                    _rentalPrice.attr({
+                        id: 'rentalPrice' + nbpiece,
+                        name: 'rentalPrice',
+                        value: rentalPrice
+                    });
+                    _damagePrice.attr({
+                        id: 'damagePrice' + nbpiece,
+                        name: 'damagePrice',
+                        value: damagePrice
+                    });
+                    _productPicture.attr({
+                        id: 'productPicture' + nbpiece,
+                        name: 'productPicture',
+                        value: productPicture
+                    });
+                    _description.attr({
+                        id: 'description' + nbpiece,
+                        name: 'description',
+                        value: ''
+                    });
+                    _ordered.attr({
+                        id: 'ordered' + nbpiece,
+                        name: 'ordered',
+                        value: $(chpss).val(),
+                        class: 'icheckbox  hide affected-amount'
+                    });
+
+                    var _qteVal = $('<input/>', {
+                        type: 'text',
+                        id: 'qteVal' + nbpiece,
+                        name: 'qteVal',
+                        class: 'form-control',
+                        //width: '20px',
+                        onkeyup: '$(this).parent().find(\'.affected-amount\').val($(this).val());',
+                        value: $(chpss).val()
+                    });
+                    
+                    td1.text(nbpiece);
+                    var selectp = $(sectselected);
+                    var optseleted = $(sectselected + " option:selected").text();
+
+                    td2.text(optseleted);
+                    
+                    //Image viewer script / Script de visualisation de l'image
+                    var img = $('<img/>', {
+                        style: 'max-width: 40px;max-height: 40px;border: 1px solid lightgrey',
+                        src: '<%=request.getContextPath()%>/productPictureReaderServlet?imageName=' + productPicture
+                    });
+
+                    td3.append(_productId);
+                    td3.append(_warehouseId);
+                    td3.append(_code);
+                    td3.append(_designation);
+                    td3.append(_rentalPrice);
+                    td3.append(_damagePrice);
+                    td3.append(_productPicture);
+                    td3.append(_description);
+                    td3.append(_ordered);
+                    td3.append(_qteVal);
+
+                    td4.append(img);
+                    td5.html('<a  onclick="getToEdit(this,' + nbpiece + ');" class="btn btn-primary btn-action mr-1" title="Edit"><i class="fas fa-pencil-alt"></i></a>'+ 
+                             '<a class="btn btn-danger btn-action" data-toggle="tooltip" title="Delete" data-confirm="Are You Sure?|This action can not be undone. Do you want to continue?" data-confirm-yes="$(this).parent().parent().remove();erase(addeds,' + $(sectselected).val() + ');"> <i class="fas fa-trash"></i></a>');
+
+                    tr.append(td1);
+                    tr.append(td2);
+                    tr.append(td3);
+                    tr.append(td4);
+                    tr.append(td5);
+                    addeds[nbpiece] = $(sectselected).val();
+                    nbpiece = nbpiece + 1;
+                }
+            }
+            //Get an equipment to edit / rechercher le produit à éditer
+            function getToEdit(elem, idref) {
+                $Xcode.val($('#code' + idref).val());
+                $Xdesignation.val($('#designation' + idref).val());
+                $Xordered.val($('#ordered' + idref).val());
+                $XrentalPrice.val($('#rentalPrice' + idref).val());
+                $XdamagePrice.val($('#damagePrice' + idref).val());
+                $Xproductviewer.attr({src: '<%=request.getContextPath()%>/productPictureReaderServlet?imageName=' + $('#productPicture' + idref).val()});
+                $Xdescription.val($('#description' + idref).val());
+                $modalLabel.attr('data-ref', idref);
+                $productmodal.modal('show');
+
+            }
+            // Input's value copier
+            function copier(base, dest) {
+                var basevalue = $(base).val();
+                $.each(dest, function (key, value) {
+                    $(value + $modalLabel.attr('data-ref')).val(basevalue);
+                });
+            }
+            //Refuse Enter key
+            function notEnterKey(event) {
+                // Compatibilité IE / Firefox
+                if (!event && window.event) {
+                    event = window.event;
+                }
+                // IE
+                if (event.keyCode === 13) {
+                    event.returnValue = false;
+                    event.cancelBubble = true;
+                }
+                // DOM
+                if (event.which === 13) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+            }
+            
+        </script>
+
+	</th:block>
+
+</body>
+</html>
